@@ -1,5 +1,12 @@
 # File Manager App
 
+🇺🇸 English | [🇧🇷 Português](README_PTBR.md)
+
+![React](https://img.shields.io/badge/React-Frontend-blue)
+![Django](https://img.shields.io/badge/Django-Backend-green)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue)
+![Docker](https://img.shields.io/badge/Docker-Containerization-blue)
+
 ## Description
 
 A fullstack file management application built with React, TypeScript, Django REST Framework and PostgreSQL.
