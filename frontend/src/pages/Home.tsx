@@ -22,6 +22,12 @@ function isImage(ct: string): boolean {
   return ct.toLowerCase().startsWith("image/");
 }
 
+function fileExtLabel(filename: string): string {
+  const ext = filename.split(".").pop();
+  if (!ext) return "FILE";
+  return ext.slice(0, 5).toUpperCase();
+}
+
 export default function Home() {
   const nav = useNavigate();
   const [user, setUser] = useState<Me | null>(null);
@@ -96,64 +102,85 @@ export default function Home() {
   }
 
   if (!user) {
-    return <p>Carregando…</p>;
+    return (
+      <div className="page-loading" aria-busy="true">
+        <div className="spinner" />
+        <span className="text-muted">Carregando…</span>
+      </div>
+    );
   }
 
   return (
     <div>
-      <div className="card">
-        <h1>Meus arquivos</h1>
-        <p>
-          Logado como <strong>{user.email}</strong> (id {user.id})
-        </p>
-        <div className="row">
-          <button type="button" onClick={() => void onLogout()} disabled={busy}>
+      <div className="card card--header">
+        <div>
+          <div className="brand-mark">
+            <span className="brand-mark__dot" aria-hidden />
+            File Manager
+          </div>
+          <h1>Meus arquivos</h1>
+          <p className="text-muted" style={{ marginBottom: 0 }}>
+            <span className="mono">{user.email}</span>
+            <span className="text-subtle"> · id {user.id}</span>
+          </p>
+        </div>
+        <div className="row row--end">
+          <button type="button" className="btn-secondary" onClick={() => void onLogout()} disabled={busy}>
             Sair
           </button>
-          <Link to="/login">Trocar de conta</Link>
+          <Link to="/login" className="btn-ghost">
+            Trocar de conta
+          </Link>
         </div>
       </div>
 
       <div className="card">
-        <h2>Enviar arquivo</h2>
-        <p className="error" style={{ marginTop: 0 }}>
-          Permitidos: .png, .jpg, .jpeg, .pdf, .txt — máximo 10MB
-        </p>
-        <input
-          type="file"
-          accept=".png,.jpg,.jpeg,.pdf,.txt"
-          disabled={busy}
-          onChange={(e) => void onFileChange(e)}
-        />
-        {uploadPct !== null ? <p>Upload: {uploadPct}%</p> : null}
-        {msg ? <p className="success">{msg}</p> : null}
-        {err ? <p className="error">{err}</p> : null}
+        <h2>Enviar</h2>
+        <p className="error hint">Tipos permitidos: .png, .jpg, .jpeg, .pdf, .txt — máximo 10MB</p>
+        <label className="upload-zone">
+          <span className="upload-zone__title">
+            {busy && uploadPct !== null ? `Enviando… ${uploadPct}%` : "Escolher arquivo"}
+          </span>
+          <span className="upload-zone__hint">Clique para selecionar um arquivo no seu dispositivo</span>
+          <input
+            type="file"
+            className="sr-only"
+            accept=".png,.jpg,.jpeg,.pdf,.txt"
+            disabled={busy}
+            onChange={(e) => void onFileChange(e)}
+          />
+        </label>
+        {uploadPct !== null && busy ? (
+          <div className="upload-bar" aria-hidden>
+            <div className="upload-bar__fill" style={{ width: `${uploadPct}%` }} />
+          </div>
+        ) : null}
+        {msg ? <p className="success" style={{ marginTop: "1rem", marginBottom: 0 }}>{msg}</p> : null}
+        {err ? <p className="error" style={{ marginTop: "1rem", marginBottom: 0 }}>{err}</p> : null}
       </div>
 
       <div className="card">
-        <h2>Lista</h2>
-        {files.length === 0 ? <p>Nenhum arquivo ainda.</p> : null}
+        <h2>Arquivos</h2>
+        {files.length === 0 ? <p className="empty-state">Nenhum arquivo ainda. Envie o primeiro acima.</p> : null}
         {files.map((row) => (
           <div key={row.id} className="file-row">
             {isImage(row.content_type) ? (
-              <img
-                className="thumb"
-                src={previewUrl(row.id)}
-                alt={row.original_name}
-              />
-            ) : null}
-            <div style={{ flex: 1, minWidth: 200 }}>
-              <div>
-                <strong>{row.original_name}</strong>
+              <img className="thumb" src={previewUrl(row.id)} alt={row.original_name} />
+            ) : (
+              <div className="thumb thumb--doc" aria-hidden>
+                {fileExtLabel(row.original_name)}
               </div>
-              <div style={{ fontSize: "0.9rem", color: "#475569" }}>
+            )}
+            <div className="file-meta">
+              <div className="file-name">{row.original_name}</div>
+              <div className="file-details">
                 {fmtBytes(row.size)} · {new Date(row.created_at).toLocaleString()}
               </div>
-              <div className="row" style={{ marginTop: "0.5rem" }}>
-                <button type="button" disabled={busy} onClick={() => void onDownload(row)}>
+              <div className="row" style={{ marginTop: "0.65rem" }}>
+                <button type="button" className="btn-primary" disabled={busy} onClick={() => void onDownload(row)}>
                   Download
                 </button>
-                <button type="button" disabled={busy} onClick={() => void onDelete(row.id)}>
+                <button type="button" className="btn-danger" disabled={busy} onClick={() => void onDelete(row.id)}>
                   Deletar
                 </button>
               </div>

@@ -21,40 +21,51 @@ export default function Register() {
 
   return (
     <div className="card">
+      <div className="brand-mark">
+        <span className="brand-mark__dot" aria-hidden />
+        File Manager
+      </div>
       <h1>Cadastro</h1>
-      <p>
+      <p className="text-muted" style={{ marginTop: "0.35rem" }}>
         Já tem conta? <Link to="/login">Entrar</Link>
       </p>
       <form onSubmit={onSubmit}>
-        <div>
+        <div className="form-field">
           <label htmlFor="email">E-mail</label>
-          <br />
           <input
             id="email"
             name="email"
             type="email"
             required
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <div style={{ marginTop: "0.75rem" }}>
+        <div className="form-field">
           <label htmlFor="password">Senha</label>
-          <br />
           <input
             id="password"
             name="password"
             type="password"
             required
             minLength={8}
+            autoComplete="new-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          <p className="text-subtle" style={{ marginTop: "0.35rem", marginBottom: 0 }}>
+            Mínimo de 8 caracteres.
+          </p>
         </div>
-        {err ? <p className="error">{err}</p> : null}
-        <div style={{ marginTop: "1rem" }} className="row">
-          <button type="submit">Cadastrar</button>
-          <Link to="/login">Ir para login</Link>
+        {err ? <p className="error" style={{ marginTop: "1rem" }}>{err}</p> : null}
+        <div className="row" style={{ marginTop: "1.25rem" }}>
+          <button type="submit" className="btn-primary">
+            Cadastrar
+          </button>
+          <Link to="/login" className="btn-secondary">
+            Ir para login
+          </Link>
         </div>
       </form>
     </div>

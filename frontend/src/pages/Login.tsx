@@ -21,38 +21,44 @@ export default function Login() {
 
   return (
     <div className="card">
-      <h1>Login</h1>
-      <p>
+      <div className="brand-mark">
+        <span className="brand-mark__dot" aria-hidden />
+        File Manager
+      </div>
+      <h1>Entrar</h1>
+      <p className="text-muted" style={{ marginTop: "0.35rem" }}>
         Novo por aqui? <Link to="/register">Cadastrar</Link>
       </p>
       <form onSubmit={onSubmit}>
-        <div>
+        <div className="form-field">
           <label htmlFor="email">E-mail</label>
-          <br />
           <input
             id="email"
             name="email"
             type="email"
             required
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <div style={{ marginTop: "0.75rem" }}>
+        <div className="form-field">
           <label htmlFor="password">Senha</label>
-          <br />
           <input
             id="password"
             name="password"
             type="password"
             required
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        {err ? <p className="error">{err}</p> : null}
-        <div style={{ marginTop: "1rem" }} className="row">
-          <button type="submit">Entrar</button>
+        {err ? <p className="error" style={{ marginTop: "1rem" }}>{err}</p> : null}
+        <div className="row" style={{ marginTop: "1.25rem" }}>
+          <button type="submit" className="btn-primary">
+            Entrar
+          </button>
         </div>
       </form>
     </div>
